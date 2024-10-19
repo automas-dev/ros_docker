@@ -13,11 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: debug
-        run: |
-          echo github.ref_name ${{ github.ref_name }}
-          echo GITHUB_REF_NAME ${GITHUB_REF_NAME}
-
       - name: Create Archive
         run: |
           tar -cJf in_ros-${{ github.ref_name }}.tar.xz Dockerfile in_ros
