@@ -1,7 +1,7 @@
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   create_release:
@@ -13,12 +13,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: debug
+        run: |
+          echo github.ref_name ${{ github.ref_name }}
+          echo GITHUB_REF_NAME ${GITHUB_REF_NAME }
+
       - name: Create Archive
         run: |
-          tar -cJf "in_ros-${GITHUB_REF_NAME}.tar.xz" *
+          tar -cJf in_ros-${{ github.ref_name }}.tar.xz Dockerfile in_ros
 
       - name: Create Release
         uses: ncipollo/release-action@v1.14.0
         with:
-          artifacts: "in_ros-${GITHUB_REF_NAME}.tar.xz"
-          name: "$GITHUB_REF_NAME"
+          artifacts: in_ros-${{ github.ref_name }}.tar.xz
+          name: ${{ github.ref_name }}
