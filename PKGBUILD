@@ -20,5 +20,7 @@ build() {
 package() {
     mkdir -p "$pkgdir/usr/local/bin"
     cp in_ros "$pkgdir/usr/local/bin/"
+    cp launch_ros "$pkgdir/usr/local/bin/"
     chmod +x "$pkgdir/usr/local/bin/in_ros"
+    chmod +x "$pkgdir/usr/local/bin/launch_ros"
 }

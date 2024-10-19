@@ -1,29 +1,14 @@
 #!/bin/bash
 
-DOCKER_IMAGE="in_ros:jazzy"
+DOCKER_CONTAINER="in_ros"
 
-sudo xhost +local:docker >/dev/null 2>&1
+if ! docker ps --format "{{.Names}}" | grep in_ros; then
+    echo "Container is not running, please launch_ros"
+    exit 1
+fi
 
-docker run -it --rm \
-    -e DISPLAY \
-    -e TERM \
-    -e QT_X11_NO_MITSHM=1 \
-    -e XAUTHORITY=/tmp/.dockerep6tovhk.xauth \
-    --network host \
-    --volume /tmp/.dockerep6tovhk.xauth:/tmp/.dockerep6tovhk.xauth \
-    --volume /tmp/.X11-unix:/tmp/.X11-unix \
-    --device=/dev/dri:/dev/dri \
-    --volume /etc/localtime:/etc/localtime:ro \
-    -e ROS_MASTER_URI \
-    -e ROS_IP \
-    -e ROS_HOSTNAME \
-    --privileged \
-    --volume "/etc/group:/etc/group:ro" \
-    --volume "/etc/passwd:/etc/passwd:ro" \
-    --volume "/etc/shadow:/etc/shadow:ro" \
-    --volume "/etc/sudoers.d:/etc/sudoers.d:ro" \
-    --volume "$(eval echo ~$USER):$(eval echo ~$USER)" \
-    --workdir "$(pwd)" \
-    --user $(id -u $USER):$(id -g $USER) \
-    "$DOCKER_IMAGE" \
-    $*
+if [ $# -lt 1 ]; then
+    docker exec -it -u "$(id -u $USER):$(id -g $USER)" -w "$PWD" "$DOCKER_CONTAINER" bash
+else
+    docker exec -it -u "$(id -u $USER):$(id -g $USER)" -w "$PWD" "$DOCKER_CONTAINER" $*
+fi

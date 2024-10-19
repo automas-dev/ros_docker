@@ -1,0 +1,35 @@
+#!/bin/bash
+
+DOCKER_IMAGE="in_ros:jazzy"
+
+if docker ps --format "{{.Names}}" | grep in_ros; then
+    echo "Container is already running"
+    exit 1
+fi
+
+sudo xhost +local:docker >/dev/null 2>&1
+
+docker run -d --rm \
+    --name in_ros \
+    -e DISPLAY \
+    -e TERM \
+    -e QT_X11_NO_MITSHM=1 \
+    -e XAUTHORITY=/tmp/.dockerep6tovhk.xauth \
+    --network host \
+    --volume /tmp/.dockerep6tovhk.xauth:/tmp/.dockerep6tovhk.xauth \
+    --volume /tmp/.X11-unix:/tmp/.X11-unix \
+    --device=/dev/dri:/dev/dri \
+    --volume /etc/localtime:/etc/localtime:ro \
+    -e ROS_MASTER_URI \
+    -e ROS_IP \
+    -e ROS_HOSTNAME \
+    --privileged \
+    --volume "/etc/group:/etc/group:ro" \
+    --volume "/etc/passwd:/etc/passwd:ro" \
+    --volume "/etc/shadow:/etc/shadow:ro" \
+    --volume "/etc/sudoers.d:/etc/sudoers.d:ro" \
+    --volume "/home:/home" \
+    "$DOCKER_IMAGE" \
+    sleep infinity
+
+echo "in_ros is running, stop with docker kill in_ros"
