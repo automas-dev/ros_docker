@@ -15,7 +15,7 @@ jobs:
 
       - name: Create Archive
         run: |
-          tar -cJf in_ros-${{ github.ref_name }}.tar.xz Dockerfile in_ros launch_ros
+          tar -cJf in_ros-${{ github.ref_name }}.tar.xz Dockerfile in_ros
 
       - name: Create Release
         uses: ncipollo/release-action@v1.14.0
